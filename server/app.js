@@ -12,14 +12,20 @@ const io = new Server(httpServer, {
 });
 
 let users = [];
+const playerColors = ["green", "red", "yellow", "brown", "black", "lavender", "purple", "orange", "teal"];
+let rooms = [];
 
 io.on("connection", (socket) => {
   console.log(users);
-  const userId = crypto.randomUUID();
-  socket.emit("youareconnected", { userId });
 
-  socket.on("message", (data) => {
-    socket.broadcast.emit("sendNotification", data);
+  const userId = crypto.randomUUID();
+  socket.emit("youareconnected", { userId, rooms });
+
+  socket.on("createRoom", (room) => {
+    socket.join(room);
+    rooms.push(room);
+    console.log(rooms);
+    socket.broadcast.emit("roomsUpdated", rooms);
   });
 
   socket.on("addme", (data) => {

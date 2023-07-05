@@ -1,30 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRooms } from '@/models/actions/roomsActions';
+import { rooms } from '@/models/selectors/roomsSelectors';
 import Head from 'next/head';
-import { Button } from '@mui/material';
-import notifications from '@/utils/notifications';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from '@mui/material';
 
 import io from 'socket.io-client';
 let socket;
 
 export default function Home() {
-  const [notificationClicked, setNotificationClicked] = useState(false);
-
-  const sendNotification = (data) => {
-    if (Notification.permission === 'granted') {
-      notifications(data);
-    } else {
-      Notification.requestPermission(function (status) {
-        if (status === 'granted') {
-          notifications(data);
-        } else {
-          alert('No permissions granted for push notifications');
-        }
-      });
-    }
-  };
+  const dispatch = useDispatch();
+  const allRooms = useSelector(rooms);
 
   const socketInitializer = () => {
-    socket = io('http://192.168.1.5:3000');
+    socket = io('http://localhost:3000');
 
     socket.on('youareconnected', (data) => {
       // localStorage.removeItem('userId');
@@ -33,34 +28,52 @@ export default function Home() {
         socket.emit('addme', { userId: localStorage.getItem('userId') });
       }
     });
+  };
 
-    socket.on('sendNotification', (data) => {
-      sendNotification(data);
-    });
+  const createRoom = () => {
+    socket.emit('createRoom', 'Room');
   };
 
   useEffect(() => {
-    Notification.requestPermission();
     socketInitializer();
-  }, []);
+    socket.on('youareconnected', (payload) => {
+      dispatch(setRooms(payload?.rooms));
+    });
 
-  useEffect(() => {
-    if (notificationClicked) {
-      socket?.emit('message', 'this is a test');
-      setNotificationClicked(false);
-    }
-  }, [notificationClicked]);
+    socket.on('roomsUpdated', (payload) => {
+      console.log(payload);
+      dispatch(setRooms(payload));
+    });
+  }, []);
 
   return (
     <>
       <Head>
         <title>Home page</title>
       </Head>
-      <Button
-        onClick={() => setNotificationClicked(true)}
-        sx={{ textTransform: 'none' }}>
-        Create Push Notification
-      </Button>
+      <div>This is the tactmove game!</div>
+      <div>
+        <FormControl fullWidth>
+          <InputLabel id="roomsIds">Age</InputLabel>
+          <Select
+            labelId="roomsIds"
+            id="demo-simple-select"
+            value=""
+            label="Age"
+            onChange={() => {}}>
+            {allRooms?.map((room, index) => (
+              <MenuItem key={index} value={room}>
+                {room}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      <div>
+        <FormControl fullWidth>
+          <Button onClick={createRoom}>Create room</Button>
+        </FormControl>
+      </div>
     </>
   );
 }
