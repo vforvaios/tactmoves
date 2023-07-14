@@ -15,9 +15,7 @@ import {
   MenuItem,
   Button,
 } from '@mui/material';
-
-import io from 'socket.io-client';
-let socket;
+import socket from '../config';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -25,8 +23,6 @@ export default function Home() {
   const router = useRouter();
 
   const socketInitializer = () => {
-    socket = io('http://localhost:3000');
-
     socket.on('youareconnected', (data) => {
       if (!sessionStorage.getItem('userId')) {
         sessionStorage.setItem('userId', data?.userId);

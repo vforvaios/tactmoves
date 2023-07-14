@@ -2,6 +2,7 @@ import { Roboto } from 'next/font/google';
 import { useEffect } from 'react';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+
 // import { persistStore } from 'redux-persist';
 // import { PersistGate } from 'redux-persist/integration/react';
 
