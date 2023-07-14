@@ -21,11 +21,13 @@ io.on("connection", (socket) => {
   const userId = crypto.randomUUID();
   socket.emit("youareconnected", { userId, rooms });
 
-  socket.on("createRoom", (room) => {
+  socket.on("createRoom", (payload) => {
+    const room = crypto.randomUUID();
     socket.join(room);
-    rooms.push(room);
+    rooms.push({ user: payload, room });
+    io.emit("roomsUpdated", { rooms, room });
+    io.to(socket.id).emit("goToRoom", { room, userId });
     console.log(rooms);
-    socket.broadcast.emit("roomsUpdated", rooms);
   });
 
   socket.on("addme", (data) => {
@@ -37,6 +39,14 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", (reason) => {
     console.log("disconnected user, ", reason);
+  });
+
+  // JOIN AN EXISTING ROOM
+  socket.on("joinExistingRoom", (payload) => {
+    rooms.push({ user: payload?.userId, room: payload?.room });
+    io.emit("roomsUpdated", { rooms, room: payload?.room });
+    io.to(socket.id).emit("goToRoom", { room: payload?.room, userId });
+    console.log(rooms);
   });
 });
 

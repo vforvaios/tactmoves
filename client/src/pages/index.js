@@ -1,8 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRooms } from '@/models/actions/roomsActions';
+import {
+  setRooms,
+  setUsersInRoom,
+  setSelectedRoom,
+} from '@/models/actions/roomsActions';
 import { rooms } from '@/models/selectors/roomsSelectors';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import {
   FormControl,
   InputLabel,
@@ -17,21 +22,21 @@ let socket;
 export default function Home() {
   const dispatch = useDispatch();
   const allRooms = useSelector(rooms);
+  const router = useRouter();
 
   const socketInitializer = () => {
     socket = io('http://localhost:3000');
 
     socket.on('youareconnected', (data) => {
-      // localStorage.removeItem('userId');
-      if (!localStorage.getItem('userId')) {
-        localStorage.setItem('userId', data?.userId);
-        socket.emit('addme', { userId: localStorage.getItem('userId') });
+      if (!sessionStorage.getItem('userId')) {
+        sessionStorage.setItem('userId', data?.userId);
+        socket.emit('addme', { userId: sessionStorage.getItem('userId') });
       }
     });
   };
 
   const createRoom = () => {
-    socket.emit('createRoom', 'Room');
+    socket.emit('createRoom', sessionStorage?.getItem('userId'));
   };
 
   useEffect(() => {
@@ -41,10 +46,22 @@ export default function Home() {
     });
 
     socket.on('roomsUpdated', (payload) => {
-      console.log(payload);
-      dispatch(setRooms(payload));
+      dispatch(setRooms(payload?.rooms));
+    });
+
+    socket.on('goToRoom', (payload) => {
+      dispatch(setSelectedRoom({ room: payload.room }));
+      dispatch(setUsersInRoom({ room: payload.room, user: payload?.userId }));
+      router.push(`/room/${payload?.room}`);
     });
   }, []);
+
+  const joinExistingRoom = (room) => {
+    socket.emit('joinExistingRoom', {
+      userId: sessionStorage?.getItem('userId'),
+      room,
+    });
+  };
 
   return (
     <>
@@ -62,8 +79,11 @@ export default function Home() {
             label="Age"
             onChange={() => {}}>
             {allRooms?.map((room, index) => (
-              <MenuItem key={index} value={room}>
-                {room}
+              <MenuItem
+                onClick={() => joinExistingRoom(room?.room)}
+                key={index}
+                value={room?.room}>
+                {room?.room}
               </MenuItem>
             ))}
           </Select>

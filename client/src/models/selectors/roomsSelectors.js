@@ -1,3 +1,10 @@
-const rooms = ({ roomsReducer }) => roomsReducer?.rooms;
+import roomsReducer from '../reducers/roomsReducer';
 
-export { rooms };
+const rooms = ({ roomsReducer }) => roomsReducer?.rooms;
+const selectedRoom = ({ roomsReducer }) => roomsReducer?.selectedRoom;
+const usersInRoom = (state) =>
+  state.roomsReducer.rooms?.filter(
+    (room) => room?.room === selectedRoom(state),
+  );
+
+export { rooms, usersInRoom, selectedRoom };
