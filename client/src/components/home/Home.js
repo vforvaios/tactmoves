@@ -13,7 +13,7 @@ const Home = ({ socket }) => {
     if (myNickName !== '' && myRoomName !== '') {
       socket.emit('joinRoom', { user: myNickName, room: myRoomName });
     } else {
-      alert('myNickName and myRoomName are must !');
+      alert('nick name and room name are a must!');
       window.location.reload();
     }
   };
