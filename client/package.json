@@ -1,41 +1,40 @@
 {
-  "name": "test-nextapp",
+  "name": "tactmovesclient",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev -p 3002",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/icons-material": "^5.10.9",
-    "@mui/material": "^5.10.13",
-    "@mui/styles": "^5.10.15",
-    "@reduxjs/toolkit": "^1.9.3",
+    "@reduxjs/toolkit": "^1.8.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
     "bcryptjs": "^2.4.3",
-    "eslint": "8.36.0",
-    "eslint-config-next": "13.2.4",
-    "next": "13.2.4",
+    "eslint-config-react-app": "^7.0.1",
     "node-sass": "^6.0.1",
-    "react": "18.2.0",
+    "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-cookie-consent": "^8.0.1",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-ga4": "^1.4.1",
-    "react-redux": "^8.0.5",
+    "react-helmet-async": "^1.3.0",
+    "react-redux": "^8.0.2",
+    "react-router": "^5.2.1",
+    "react-router-dom": "^6.3.0",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "5.0.1",
     "react-slick": "^0.28.1",
+    "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-observable": "^2.0.0",
     "redux-persist": "^6.0.0",
     "rxjs": "^7.3.0",
-    "sass": "^1.59.3",
-    "socket.io-client": "^4.6.2",
-    "tss-react": "^4.4.4"
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.1",
+    "tss-react": "^4.4.4",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint": "^7.11.0",
     "eslint-config-airbnb": "18.1.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-config-standard": "14.1.1",
@@ -45,8 +44,142 @@
     "eslint-plugin-prettier": "3.1.3",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
-    "babel-eslint": "10.1.0",
     "prettier": "2.0.5",
     "prettier-eslint": "9.0.1"
+  },
+  "scripts": {
+    "start": "PORT=3007 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.js"
+        ],
+        "rules": {
+          "no-unused-vars": "warn",
+          "curly": [
+            "error",
+            "all"
+          ],
+          "brace-style": [
+            "error",
+            "1tbs",
+            {
+              "allowSingleLine": false
+            }
+          ],
+          "comma-dangle": [
+            "error",
+            {
+              "arrays": "always-multiline",
+              "objects": "always-multiline",
+              "imports": "always-multiline",
+              "exports": "always-multiline",
+              "functions": "always-multiline"
+            }
+          ],
+          "no-console": "warn",
+          "semi": [
+            "error",
+            "always"
+          ],
+          "jsx-quotes": [
+            "error",
+            "prefer-double"
+          ],
+          "max-len": [
+            "error",
+            {
+              "code": 200
+            }
+          ],
+          "padding-line-between-statements": [
+            "error",
+            {
+              "blankLine": "always",
+              "prev": "*",
+              "next": "return"
+            },
+            {
+              "blankLine": "always",
+              "prev": [
+                "const",
+                "let",
+                "var"
+              ],
+              "next": "*"
+            },
+            {
+              "blankLine": "any",
+              "prev": [
+                "const",
+                "let",
+                "var"
+              ],
+              "next": [
+                "const",
+                "let",
+                "var"
+              ]
+            }
+          ],
+          "object-curly-spacing": [
+            "error",
+            "always"
+          ],
+          "sort-imports": "off",
+          "import/order": [
+            "error",
+            {
+              "groups": [
+                "builtin",
+                "external",
+                "internal",
+                [
+                  "parent",
+                  "sibling"
+                ]
+              ],
+              "alphabetize": {
+                "order": "asc",
+                "caseInsensitive": true
+              },
+              "newlines-between": "always"
+            }
+          ],
+          "import/newline-after-import": [
+            "warn",
+            {
+              "count": 1
+            }
+          ],
+          "prefer-arrow-callback": 0,
+          "prefer-template": "error",
+          "no-constant-condition": [
+            "error"
+          ]
+        }
+      }
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -1,47 +1,24 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import rootEpics from '@/models/epics/rootEpics';
-import roomsReducer from '@/models/reducers/roomsReducer';
+import roomReducer from 'models/reducers/roomReducer';
 import { combineReducers } from 'redux';
-// import { createEpicMiddleware } from 'redux-observable';
-// import {
-//   persistReducer,
-//   FLUSH,
-//   REHYDRATE,
-//   PAUSE,
-//   PERSIST,
-//   PURGE,
-//   REGISTER,
-// } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-// const persistConfig = {
-//   key: 'state',
-//   storage,
-// };
+const persistConfig = {
+  key: 'state',
+  storage,
+};
 
-// const persistedReducer = persistReducer(
-//   persistConfig,
-//   combineReducers({
-//     roomsReducer,
-//   }),
-// );
-const finalReducer = combineReducers({
-  roomsReducer,
-});
-
-// const epicMiddleWare = createEpicMiddleware();
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers({
+    roomReducer,
+  }),
+);
 
 const store = configureStore({
-  reducer: finalReducer,
-  // middleware: [epicMiddleWare],
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware({
-  //     serializableCheck: {
-  //       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-  //     },
-  //   }),
+  reducer: persistedReducer,
   devTools: process.env.NODE_ENV !== 'production',
 });
 
-// epicMiddleWare.run(rootEpics);
 export default store;

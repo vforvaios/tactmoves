@@ -11,42 +11,47 @@ const io = new Server(httpServer, {
   },
 });
 
-let users = [];
-const playerColors = ["green", "red", "yellow", "brown", "black", "lavender", "purple", "orange", "teal"];
-let rooms = [];
+const users = [];
 
 io.on("connection", (socket) => {
-  console.log(users);
-
-  const userId = crypto.randomUUID();
-  socket.emit("youareconnected", { userId, rooms });
-
-  socket.on("createRoom", (payload) => {
-    const room = crypto.randomUUID();
+  socket.on("joinRoom", ({ user, room }) => {
+    //* create user
+    users.push({ id: socket.id, user, room });
+    console.log(socket.id, "=id");
     socket.join(room);
-    rooms.push({ user: payload, room });
-    io.emit("roomsUpdated", { rooms, room });
-    io.to(socket.id).emit("goToRoom", { room, userId });
-    console.log(rooms);
+
+    //display a welcome message to the user who have joined a room
+    socket.emit("message", {
+      userId: socket.id,
+      user,
+      text: `Welcome ${user}`,
+    });
+
+    //displays a joined room message to all other room users except that particular user
+    socket.broadcast.to(room).emit("message", {
+      userId: socket.id,
+      user,
+      text: `${user} has joined the chat`,
+    });
   });
 
-  socket.on("addme", (data) => {
-    if (!users?.find((user) => user?.userId === data?.userId)) {
-      users.push({ userId: data?.userId });
-      console.log(users);
+  socket.on("canijoin", ({ user, room }) => {
+    const existingUser = users.find((u) => u.user === user);
+    if (existingUser) {
+      //display a welcome message to the user who have joined a room
+      socket.emit("message", {
+        userId: socket.id,
+        user,
+        text: `Welcome ${user}`,
+      });
+
+      //displays a joined room message to all other room users except that particular user
+      socket.broadcast.to(room).emit("message", {
+        userId: socket.id,
+        user,
+        text: `${user} has joined the chat`,
+      });
     }
-  });
-
-  socket.on("disconnect", (reason) => {
-    console.log("disconnected user, ", reason);
-  });
-
-  // JOIN AN EXISTING ROOM
-  socket.on("joinExistingRoom", (payload) => {
-    rooms.push({ user: payload?.userId, room: payload?.room });
-    io.emit("roomsUpdated", { rooms, room: payload?.room });
-    io.to(socket.id).emit("goToRoom", { room: payload?.room, userId });
-    console.log(rooms);
   });
 });
 

@@ -1,0 +1,84 @@
+button {
+  background: transparent;
+  border: 0 none;
+  font-size: 20px;
+  color: $color-3;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Roboto';
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &.green {
+    background: $success;
+  }
+
+  &.red {
+    background: $alert;
+
+    &.refresh {
+      color: $white;
+    }
+  }
+
+  &.next {
+    background: $color-1 !important;
+    border: 0 none;
+    color: $white;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    font-size: inherit;
+  }
+}
+
+a {
+  background: transparent;
+  border: 0 none;
+  font-size: 14px;
+  color: $color-1;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  padding: 4px;
+  font-weight: 700;
+  text-align: center;
+  display: block;
+
+  &.navigation {
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &.green {
+      background: $success;
+    }
+
+    &.red {
+      background: $alert;
+    }
+
+    &.next {
+      color: $white;
+      border: 0 none;
+      font-size: 20px;
+      background: $color-1;
+      border-radius: 4px;
+      padding: 8px;
+      min-width: 150px;
+    }
+  }
+}
+
+button.next[disabled] {
+  cursor: default;
+  pointer-events: none;
+  background: $shadow !important;
+  color: $disabled;
+}
