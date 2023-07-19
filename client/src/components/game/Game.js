@@ -15,7 +15,13 @@ const Game = ({ socket }) => {
 
   useEffect(() => {
     socket.on('message', (payload) => {
-      dispatch(setUsers(payload?.users?.map((u) => u.user)));
+      dispatch(
+        setUsers(
+          payload?.users
+            ?.filter((us) => us?.user !== myNickName)
+            .map((u) => u.user),
+        ),
+      );
     });
   }, [socket]);
 
