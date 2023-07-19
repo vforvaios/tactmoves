@@ -36,7 +36,7 @@ const Home = ({ socket }) => {
         />
       </div>
       <div>
-        <Link to={`/game/${myRoomName}/${myNickName}`}>
+        <Link to={`/game/${myRoomName}`}>
           <button className="next" onClick={sendData}>
             Join
           </button>

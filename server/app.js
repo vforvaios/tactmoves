@@ -24,6 +24,7 @@ io.on("connection", (socket) => {
       userId: socket.id,
       user,
       text: `Welcome ${user}`,
+      users,
     });
 
     //displays a joined room message to all other room users except that particular user
@@ -31,6 +32,7 @@ io.on("connection", (socket) => {
       userId: socket.id,
       user,
       text: `${user} has joined the chat`,
+      users,
     });
   });
 });

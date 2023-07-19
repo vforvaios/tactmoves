@@ -1,9 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setRoom, setNickName } from 'models/actions/roomActions';
+import { setRoom, setNickName, setUsers } from 'models/actions/roomActions';
 
 const initialState = {
   room: '',
   nickName: '',
+  users: [],
 };
 const alertReducer = createReducer(initialState, {
   [setRoom.type]: (state, action) => ({
@@ -13,6 +14,10 @@ const alertReducer = createReducer(initialState, {
   [setNickName.type]: (state, action) => ({
     ...state,
     nickName: action.payload,
+  }),
+  [setUsers.type]: (state, action) => ({
+    ...state,
+    users: [...state.users, ...action.payload],
   }),
 });
 
