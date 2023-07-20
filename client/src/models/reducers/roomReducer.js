@@ -17,7 +17,7 @@ const alertReducer = createReducer(initialState, {
   }),
   [setUsers.type]: (state, action) => ({
     ...state,
-    users: [...state.users, ...action.payload],
+    users: [...action.payload],
   }),
 });
 

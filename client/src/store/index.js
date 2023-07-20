@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
+import rootEpics from 'models/epics/rootEpics';
 import roomReducer from 'models/reducers/roomReducer';
 import { combineReducers } from 'redux';
+import { createEpicMiddleware } from 'redux-observable';
 import { persistReducer } from 'redux-persist';
 import storageSession from 'redux-persist/lib/storage/session';
 
@@ -16,13 +18,19 @@ const persistedReducer = persistReducer(
   }),
 );
 
+const epicMiddleWare = createEpicMiddleware();
+
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+  middleware: [
+    // (getDefaultMiddleware) =>
+    //   getDefaultMiddleware({
+    //     serializableCheck: false,
+    //   }),
+    epicMiddleWare,
+  ],
   devTools: process.env.NODE_ENV !== 'production',
 });
 
+epicMiddleWare.run(rootEpics);
 export default store;

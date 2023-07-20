@@ -16,14 +16,16 @@ const Game = ({ socket }) => {
   useEffect(() => {
     socket.on('message', (payload) => {
       dispatch(
-        setUsers(
-          payload?.users
-            ?.filter((us) => us?.user !== myNickName)
-            .map((u) => u.user),
-        ),
+        setUsers([
+          ...new Set(
+            payload?.users
+              ?.filter((us) => us?.user !== myNickName)
+              .map((u) => u.user),
+          ),
+        ]),
       );
     });
-  }, [socket]);
+  }, [haveSetNickName, socket]);
 
   const sendData = () => {
     socket.emit('joinRoom', { user: myNickName, room: params.room });
