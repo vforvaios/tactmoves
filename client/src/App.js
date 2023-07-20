@@ -5,6 +5,7 @@ import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import io from 'socket.io-client';
+import 'semantic-ui-css/semantic.min.css';
 import 'fontello/css/fontello.css';
 
 const socket = io.connect('http://localhost:3000');
