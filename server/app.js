@@ -12,6 +12,8 @@ const io = new Server(httpServer, {
 });
 
 const users = [];
+let minusOneSecondInterval;
+let chronometer = 60;
 
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ user, room, difficulty }) => {
@@ -34,6 +36,14 @@ io.on("connection", (socket) => {
       text: `${user} has joined the chat`,
       users: users?.filter((user) => user?.room === room),
     });
+  });
+
+  socket.on("startMemorizeChronometer", ({ room }) => {
+    console.log(room);
+    chronometer -= 1;
+    setInterval(function () {
+      socket.emit("minusOneSecond", chronometer);
+    }, 1000);
   });
 });
 
