@@ -7,7 +7,7 @@ import { nickName, room, difficulty } from 'models/selectors/roomSelectors';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Input, Dropdown } from 'semantic-ui-react';
+import { Input, Dropdown, Button } from 'semantic-ui-react';
 
 import gameConfiguration from '../../config';
 
@@ -18,10 +18,14 @@ const Home = ({ socket }) => {
   const myDifficulty = useSelector(difficulty);
 
   const sendData = () => {
-    if (myNickName !== '' && myRoomName !== '' && myDifficulty === -1) {
-      socket.emit('joinRoom', { user: myNickName, room: myRoomName });
+    if (myNickName !== '' && myRoomName !== '' && myDifficulty) {
+      socket.emit('joinRoom', {
+        user: myNickName,
+        room: myRoomName,
+        difficulty: myDifficulty?.value,
+      });
     } else {
-      alert('nick name and room name are a must!');
+      alert('nick name, room name and difficulty are a must!');
       window.location.reload();
     }
   };
@@ -55,9 +59,9 @@ const Home = ({ socket }) => {
       </div>
       <div>
         <Link to={`/game/${myRoomName}`}>
-          <button className="next" onClick={sendData}>
+          <Button primary onClick={sendData}>
             Join
-          </button>
+          </Button>
         </Link>
       </div>
     </div>

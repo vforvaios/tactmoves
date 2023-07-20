@@ -14,9 +14,9 @@ const io = new Server(httpServer, {
 const users = [];
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ user, room }) => {
+  socket.on("joinRoom", ({ user, room, difficulty }) => {
     //* create user
-    users.push({ id: socket.id, user, room });
+    users.push({ id: socket.id, user, room, difficulty });
     socket.join(room);
 
     //display a welcome message to the user who have joined a room
