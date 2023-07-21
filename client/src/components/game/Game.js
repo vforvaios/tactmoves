@@ -1,19 +1,24 @@
-import { setNickName, setUsers } from 'models/actions/roomActions';
-import { nickName, users } from 'models/selectors/roomSelectors';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  setNickName,
+  setUsers,
+  setChronometer,
+} from 'models/actions/roomActions';
+import { nickName, users, chronometer } from 'models/selectors/roomSelectors';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Button, Input } from 'semantic-ui-react';
 
 const Game = ({ socket }) => {
   const dispatch = useDispatch();
   const myNickName = useSelector(nickName);
+  const myChronometer = useSelector(chronometer);
   const myUsers = useSelector(users);
 
   const params = useParams();
   const myRoomName = params?.room;
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
-  const [myChronometer, setMyChronometer] = useState(undefined);
 
   useEffect(() => {
     socket.on('message', (payload) => {
@@ -30,8 +35,9 @@ const Game = ({ socket }) => {
   }, [haveSetNickName, socket]);
 
   useEffect(() => {
+    console.log('updated');
     socket.on('minusOneSecond', (payload) => {
-      setMyChronometer(payload);
+      dispatch(setChronometer(payload));
     });
   }, [socket, myChronometer]);
 
@@ -49,16 +55,16 @@ const Game = ({ socket }) => {
       {!haveSetNickName ? (
         <>
           <div>
-            <input
+            <Input
               placeholder="Input your user name"
               value={myNickName}
               onChange={(e) => dispatch(setNickName(e.target.value))}
             />
           </div>
           <div>
-            <button className="next" onClick={sendData}>
+            <Button primary onClick={sendData}>
               Join
-            </button>
+            </Button>
           </div>
         </>
       ) : (
@@ -68,15 +74,18 @@ const Game = ({ socket }) => {
             <span style={{ fontSize: '0.7rem' }}>in {myRoomName}</span>
           </h2>
 
-          <Button primary onClick={startMemorizeChronometer}>
-            Start the game
-          </Button>
-          <div>{myChronometer}</div>
+          {!myChronometer ? (
+            <Button primary onClick={startMemorizeChronometer}>
+              Start the game
+            </Button>
+          ) : (
+            <div>{myChronometer}</div>
+          )}
         </div>
       )}
       <ul>
-        {myUsers?.map((user) => (
-          <li>{user}</li>
+        {myUsers?.map((user, index) => (
+          <li key={index}>{user}</li>
         ))}
       </ul>
     </div>

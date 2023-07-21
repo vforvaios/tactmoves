@@ -12,13 +12,12 @@ const io = new Server(httpServer, {
 });
 
 const users = [];
-let minusOneSecondInterval;
-let chronometer = 60;
+let chronometerValue = 60;
 
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ user, room, difficulty }) => {
     //* create user
-    users.push({ id: socket.id, user, room, difficulty });
+    users.push({ id: socket.id, user, room, difficulty, chronometer: chronometerValue });
     socket.join(room);
 
     //display a welcome message to the user who have joined a room
@@ -27,6 +26,7 @@ io.on("connection", (socket) => {
       user,
       text: `Welcome ${user}`,
       users: users?.filter((user) => user?.room === room),
+      chronometer: chronometerValue,
     });
 
     //displays a joined room message to all other room users except that particular user
@@ -35,14 +35,19 @@ io.on("connection", (socket) => {
       user,
       text: `${user} has joined the chat`,
       users: users?.filter((user) => user?.room === room),
+      chronometer: chronometerValue,
     });
   });
 
   socket.on("startMemorizeChronometer", ({ room }) => {
-    console.log(room);
-    chronometer -= 1;
-    setInterval(function () {
-      socket.emit("minusOneSecond", chronometer);
+    let chronometer = chronometerValue;
+    let minusOneSecondInterval = setInterval(function () {
+      chronometer -= 1;
+      if (chronometer >= 0) {
+        io.in(room).emit("minusOneSecond", chronometer);
+      } else {
+        clearInterval(minusOneSecondInterval);
+      }
     }, 1000);
   });
 });
