@@ -3,8 +3,14 @@ import {
   setNickName,
   setUsers,
   setChronometer,
+  setGameStarted,
 } from 'models/actions/roomActions';
-import { nickName, users, chronometer } from 'models/selectors/roomSelectors';
+import {
+  nickName,
+  users,
+  chronometer,
+  gameStared,
+} from 'models/selectors/roomSelectors';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -14,6 +20,7 @@ const Game = ({ socket }) => {
   const dispatch = useDispatch();
   const myNickName = useSelector(nickName);
   const myChronometer = useSelector(chronometer);
+  const myGameStarted = useSelector(gameStared);
   const myUsers = useSelector(users);
 
   const params = useParams();
@@ -39,6 +46,10 @@ const Game = ({ socket }) => {
     socket.on('minusOneSecond', (payload) => {
       dispatch(setChronometer(payload));
     });
+
+    if (myChronometer === 0) {
+      dispatch(setGameStarted());
+    }
   }, [socket, myChronometer]);
 
   const sendData = () => {
@@ -74,12 +85,16 @@ const Game = ({ socket }) => {
             <span style={{ fontSize: '0.7rem' }}>in {myRoomName}</span>
           </h2>
 
-          {!myChronometer ? (
-            <Button primary onClick={startMemorizeChronometer}>
-              Start the game
-            </Button>
+          {!myGameStarted ? (
+            !myChronometer ? (
+              <Button primary onClick={startMemorizeChronometer}>
+                Start the game
+              </Button>
+            ) : (
+              <div>{myChronometer}</div>
+            )
           ) : (
-            <div>{myChronometer}</div>
+            <div>Game Started!</div>
           )}
         </div>
       )}

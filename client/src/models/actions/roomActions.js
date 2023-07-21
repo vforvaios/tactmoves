@@ -6,6 +6,7 @@ const setUsers = createAction('alert/setUsers');
 const manipulateUsers = createAction('alert/manipulateUsers');
 const setDifficulty = createAction('alert/setDifficulty');
 const setChronometer = createAction('alert/setChronometer');
+const setGameStarted = createAction('alert/setGameStarted');
 
 export {
   setRoom,
@@ -14,4 +15,5 @@ export {
   manipulateUsers,
   setDifficulty,
   setChronometer,
+  setGameStarted,
 };

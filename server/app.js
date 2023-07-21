@@ -12,7 +12,7 @@ const io = new Server(httpServer, {
 });
 
 const users = [];
-let chronometerValue = 60;
+let chronometerValue = 10;
 
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ user, room, difficulty }) => {
