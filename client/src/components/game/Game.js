@@ -29,7 +29,7 @@ const Game = ({ socket }) => {
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
 
   useEffect(() => {
-    nickNameRef.current.focus();
+    nickNameRef && nickNameRef?.current?.focus();
     socket.on('message', (payload) => {
       dispatch(
         setUsers([
