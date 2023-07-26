@@ -4,12 +4,15 @@ import {
   setUsers,
   setChronometer,
   setGameStarted,
+  setGamePuzzle,
 } from 'models/actions/roomActions';
 import {
   nickName,
   users,
   chronometer,
   gameStared,
+  gamePuzzle,
+  difficulty,
 } from 'models/selectors/roomSelectors';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,8 +24,10 @@ const Game = ({ socket }) => {
   const dispatch = useDispatch();
   const myNickName = useSelector(nickName);
   const myChronometer = useSelector(chronometer);
+  const myGamePuzzle = useSelector(gamePuzzle);
   const myGameStarted = useSelector(gameStared);
   const myUsers = useSelector(users);
+  const myDifficulty = useSelector(difficulty);
 
   const params = useParams();
   const myRoomName = params?.room;
@@ -44,14 +49,21 @@ const Game = ({ socket }) => {
   }, [haveSetNickName, socket]);
 
   useEffect(() => {
-    console.log('updated');
     socket.on('minusOneSecond', (payload) => {
       dispatch(setChronometer(payload));
     });
 
     if (myChronometer === 0) {
       dispatch(setGameStarted());
+      socket.emit('startTheGame', {
+        room: myRoomName,
+        difficulty: myDifficulty?.value || myUsers?.[0]?.difficulty,
+      });
     }
+
+    socket.on('getPuzzle', ({ gameArray }) => {
+      dispatch(setGamePuzzle(gameArray));
+    });
   }, [socket, myChronometer]);
 
   const sendData = () => {
@@ -99,7 +111,6 @@ const Game = ({ socket }) => {
             {myNickName}{' '}
             <span style={{ fontSize: '0.7rem' }}>in {myRoomName}</span>
           </h2>
-
           {!myGameStarted ? (
             !myChronometer ? (
               <Button primary onClick={startMemorizeChronometer}>
@@ -109,7 +120,20 @@ const Game = ({ socket }) => {
               <div>{myChronometer}</div>
             )
           ) : (
-            <div>Game Started!</div>
+            <div className="gamePuzzle">
+              {myGamePuzzle.map((rows, index) => (
+                <ul key={`row_${index}`} className="gameRow">
+                  {rows?.map((row, index2) => (
+                    <li
+                      onClick={() => alert(`Pressed ${index}${index2} element`)}
+                      key={`row_${index}_col_${index2}`}
+                      className="gameCol">
+                      row_{index}_col_{index2}
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
           )}
         </div>
       )}

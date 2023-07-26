@@ -1,0 +1,11 @@
+.gameRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.gameCol {
+  width: 150px;
+  height: 50px;
+  border: 1px solid #ccc;
+  list-style-type: none;
+}

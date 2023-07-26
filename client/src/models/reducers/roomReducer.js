@@ -6,6 +6,7 @@ import {
   setDifficulty,
   setChronometer,
   setGameStarted,
+  setGamePuzzle,
 } from 'models/actions/roomActions';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   difficulty: undefined,
   chronometer: undefined,
   gameStared: false,
+  gamePuzzle: undefined,
   users: [],
 };
 const alertReducer = createReducer(initialState, {
@@ -40,6 +42,10 @@ const alertReducer = createReducer(initialState, {
   [setGameStarted.type]: (state, action) => ({
     ...state,
     gameStared: !state?.gameStared,
+  }),
+  [setGamePuzzle.type]: (state, action) => ({
+    ...state,
+    gamePuzzle: action.payload,
   }),
 });
 
