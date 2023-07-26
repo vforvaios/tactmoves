@@ -7,6 +7,7 @@ import {
   setChronometer,
   setGameStarted,
   setGamePuzzle,
+  setRowColumnColor,
 } from 'models/actions/roomActions';
 
 const initialState = {
@@ -46,6 +47,16 @@ const alertReducer = createReducer(initialState, {
   [setGamePuzzle.type]: (state, action) => ({
     ...state,
     gamePuzzle: action.payload,
+  }),
+  [setRowColumnColor.type]: (state, action) => ({
+    ...state,
+    gamePuzzle: state?.gamePuzzle?.map((row, index) =>
+      index !== action.payload.row
+        ? [...row]
+        : row?.map((col, index2) =>
+            index2 !== action.payload.column ? col : 'red',
+          ),
+    ),
   }),
 });
 

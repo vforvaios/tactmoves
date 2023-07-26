@@ -17,7 +17,7 @@ let chronometerValue = 10;
 
 function createPuzzle(users, room, difficulty) {
   const gameArray = Array.from({ length: difficulty }, () =>
-    new Array(difficulty).fill(''),
+    new Array(difficulty).fill(),
   );
   for (let i = 0; i < users.length; i++) {
     if (users[i].room === room) {

@@ -8,6 +8,7 @@ const setDifficulty = createAction('alert/setDifficulty');
 const setChronometer = createAction('alert/setChronometer');
 const setGameStarted = createAction('alert/setGameStarted');
 const setGamePuzzle = createAction('alert/setGamePuzzle');
+const setRowColumnColor = createAction('alert/setRowColumnColor');
 
 export {
   setRoom,
@@ -18,4 +19,5 @@ export {
   setChronometer,
   setGameStarted,
   setGamePuzzle,
+  setRowColumnColor,
 };

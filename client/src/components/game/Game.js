@@ -5,6 +5,7 @@ import {
   setChronometer,
   setGameStarted,
   setGamePuzzle,
+  setRowColumnColor,
 } from 'models/actions/roomActions';
 import {
   nickName,
@@ -34,6 +35,16 @@ const Game = ({ socket }) => {
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
 
   useEffect(() => {
+    socket.on('getPuzzle', ({ gameArray }) => {
+      dispatch(setGamePuzzle(gameArray));
+    });
+
+    socket.on('usersClick', ({ row, column }) => {
+      dispatch(setRowColumnColor({ row, column }));
+    });
+  }, [socket]);
+
+  useEffect(() => {
     nickNameRef && nickNameRef?.current?.focus();
     socket.on('message', (payload) => {
       dispatch(
@@ -60,14 +71,6 @@ const Game = ({ socket }) => {
         difficulty: myDifficulty?.value || myUsers?.[0]?.difficulty,
       });
     }
-
-    socket.on('getPuzzle', ({ gameArray }) => {
-      dispatch(setGamePuzzle(gameArray));
-    });
-
-    socket.on('usersClick', ({ row, column }) => {
-      alert(`Clicked ${row}${column}`);
-    });
   }, [socket, myChronometer]);
 
   const sendData = () => {
@@ -92,6 +95,7 @@ const Game = ({ socket }) => {
   };
 
   const sendClick = ({ room, row, column }) => {
+    dispatch(setRowColumnColor({ row, column }));
     socket.emit('playerClickedSquare', { room, row, column });
   };
 
@@ -133,6 +137,7 @@ const Game = ({ socket }) => {
                 <ul key={`row_${index}`} className="gameRow">
                   {rows?.map((row, index2) => (
                     <li
+                      style={{ backgroundColor: row }}
                       onClick={() =>
                         sendClick({
                           room: myRoomName,
