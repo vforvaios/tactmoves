@@ -30,7 +30,6 @@ function createPuzzle(users, room, difficulty) {
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', ({ user, room, difficulty }) => {
-    console.log('difficulty=', difficulty);
     //* create user
     users.push({
       id: socket.id,
@@ -77,6 +76,10 @@ io.on('connection', (socket) => {
       difficulty,
       puzzle: createPuzzle(users, room, difficulty),
     };
+  });
+
+  socket.on('playerClickedSquare', ({ room, row, column }) => {
+    socket.to(room).emit('usersClick', { row, column });
   });
 });
 

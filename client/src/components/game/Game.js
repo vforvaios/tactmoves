@@ -64,6 +64,10 @@ const Game = ({ socket }) => {
     socket.on('getPuzzle', ({ gameArray }) => {
       dispatch(setGamePuzzle(gameArray));
     });
+
+    socket.on('usersClick', ({ row, column }) => {
+      alert(`Clicked ${row}${column}`);
+    });
   }, [socket, myChronometer]);
 
   const sendData = () => {
@@ -85,6 +89,10 @@ const Game = ({ socket }) => {
     if (e.keyCode === 13) {
       sendData();
     }
+  };
+
+  const sendClick = ({ room, row, column }) => {
+    socket.emit('playerClickedSquare', { room, row, column });
   };
 
   return (
@@ -121,11 +129,17 @@ const Game = ({ socket }) => {
             )
           ) : (
             <div className="gamePuzzle">
-              {myGamePuzzle.map((rows, index) => (
+              {myGamePuzzle?.map((rows, index) => (
                 <ul key={`row_${index}`} className="gameRow">
                   {rows?.map((row, index2) => (
                     <li
-                      onClick={() => alert(`Pressed ${index}${index2} element`)}
+                      onClick={() =>
+                        sendClick({
+                          room: myRoomName,
+                          row: index,
+                          column: index2,
+                        })
+                      }
                       key={`row_${index}_col_${index2}`}
                       className="gameCol">
                       row_{index}_col_{index2}
