@@ -13,12 +13,14 @@ const io = new Server(httpServer, {
 
 const users = [];
 const rooms = {};
-let chronometerValue = 10;
 
 function createPuzzle(users, room, difficulty) {
   const gameArray = Array.from({ length: difficulty }, () =>
     new Array(difficulty).fill(),
   );
+
+  console.log('difficulty=', difficulty);
+  console.log('room=', room);
   for (let i = 0; i < users.length; i++) {
     if (users[i].room === room) {
       users[i].gamePuzzle = gameArray;
@@ -36,7 +38,6 @@ io.on('connection', (socket) => {
       user,
       room,
       difficulty,
-      chronometer: chronometerValue,
     });
     socket.join(room);
 
@@ -46,7 +47,6 @@ io.on('connection', (socket) => {
       user,
       text: `Welcome ${user}`,
       users: users?.filter((user) => user?.room === room),
-      chronometer: chronometerValue,
     });
 
     //displays a joined room message to all other room users except that particular user
@@ -55,20 +55,7 @@ io.on('connection', (socket) => {
       user,
       text: `${user} has joined the chat`,
       users: users?.filter((user) => user?.room === room),
-      chronometer: chronometerValue,
     });
-  });
-
-  socket.on('startMemorizeChronometer', ({ room }) => {
-    let chronometer = chronometerValue;
-    let minusOneSecondInterval = setInterval(function () {
-      chronometer -= 1;
-      if (chronometer >= 0) {
-        io.in(room).emit('minusOneSecond', chronometer);
-      } else {
-        clearInterval(minusOneSecondInterval);
-      }
-    }, 1000);
   });
 
   socket.on('startTheGame', ({ room, difficulty }) => {

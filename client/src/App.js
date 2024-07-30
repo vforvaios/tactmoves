@@ -18,7 +18,10 @@ const App = () => (
           <Router>
             <Routes>
               <Route exact path="/" element={<Home socket={socket} />} />
-              <Route path="/game/:room" element={<Game socket={socket} />} />
+              <Route
+                path="/game/:room/:difficulty"
+                element={<Game socket={socket} />}
+              />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Router>

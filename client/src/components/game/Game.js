@@ -2,19 +2,10 @@
 import {
   setNickName,
   setUsers,
-  setChronometer,
-  setGameStarted,
   setGamePuzzle,
   setRowColumnColor,
 } from 'models/actions/roomActions';
-import {
-  nickName,
-  users,
-  chronometer,
-  gameStared,
-  gamePuzzle,
-  difficulty,
-} from 'models/selectors/roomSelectors';
+import { nickName, users, gamePuzzle } from 'models/selectors/roomSelectors';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -24,15 +15,22 @@ const Game = ({ socket }) => {
   const nickNameRef = useRef(null);
   const dispatch = useDispatch();
   const myNickName = useSelector(nickName);
-  const myChronometer = useSelector(chronometer);
   const myGamePuzzle = useSelector(gamePuzzle);
-  const myGameStarted = useSelector(gameStared);
   const myUsers = useSelector(users);
-  const myDifficulty = useSelector(difficulty);
 
   const params = useParams();
   const myRoomName = params?.room;
+  const myDifficulty = params?.difficulty;
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
+
+  useEffect(() => {
+    if (myUsers.length === 1) {
+      socket.emit('startTheGame', {
+        difficulty: myDifficulty,
+        room: myRoomName,
+      });
+    }
+  }, [myUsers]);
 
   useEffect(() => {
     socket.on('getPuzzle', ({ gameArray }) => {
@@ -59,20 +57,6 @@ const Game = ({ socket }) => {
     });
   }, [haveSetNickName, socket]);
 
-  useEffect(() => {
-    socket.on('minusOneSecond', (payload) => {
-      dispatch(setChronometer(payload));
-    });
-
-    if (myChronometer === 0) {
-      dispatch(setGameStarted());
-      socket.emit('startTheGame', {
-        room: myRoomName,
-        difficulty: myDifficulty?.value || myUsers?.[0]?.difficulty,
-      });
-    }
-  }, [socket, myChronometer]);
-
   const sendData = () => {
     if (!myNickName) {
       alert('Please enter a valid nick name');
@@ -82,10 +66,6 @@ const Game = ({ socket }) => {
       socket.emit('joinRoom', { user: myNickName, room: params.room });
       setHaveSetNickName(true);
     }
-  };
-
-  const startMemorizeChronometer = () => {
-    socket.emit('startMemorizeChronometer', { room: myRoomName });
   };
 
   const handleKeyPress = (e) => {
@@ -123,44 +103,35 @@ const Game = ({ socket }) => {
             {myNickName}{' '}
             <span style={{ fontSize: '0.7rem' }}>in {myRoomName}</span>
           </h2>
-          {!myGameStarted ? (
-            !myChronometer ? (
-              <Button primary onClick={startMemorizeChronometer}>
-                Start the game
-              </Button>
-            ) : (
-              <div>{myChronometer}</div>
-            )
-          ) : (
-            <div className="gamePuzzle">
-              {myGamePuzzle?.map((rows, index) => (
-                <ul key={`row_${index}`} className="gameRow">
-                  {rows?.map((row, index2) => (
-                    <li
-                      style={{ backgroundColor: row }}
-                      onClick={() =>
-                        sendClick({
-                          room: myRoomName,
-                          row: index,
-                          column: index2,
-                        })
-                      }
-                      key={`row_${index}_col_${index2}`}
-                      className="gameCol">
-                      row_{index}_col_{index2}
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          )}
+          <ul className="users">
+            {myUsers?.map((user, index) => (
+              <li key={index}>{user} has entered the room.</li>
+            ))}
+          </ul>
+          <hr />
+          <div className="gamePuzzle">
+            {myGamePuzzle?.map((rows, index) => (
+              <ul key={`row_${index}`} className="gameRow">
+                {rows?.map((row, index2) => (
+                  <li
+                    style={{ backgroundColor: row }}
+                    onClick={() =>
+                      sendClick({
+                        room: myRoomName,
+                        row: index,
+                        column: index2,
+                      })
+                    }
+                    key={`row_${index}_col_${index2}`}
+                    className="gameCol">
+                    row_{index}_col_{index2}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
         </div>
       )}
-      <ul>
-        {myUsers?.map((user, index) => (
-          <li key={index}>{user}</li>
-        ))}
-      </ul>
     </div>
   );
 };

@@ -4,8 +4,6 @@ import {
   setNickName,
   setUsers,
   setDifficulty,
-  setChronometer,
-  setGameStarted,
   setGamePuzzle,
   setRowColumnColor,
 } from 'models/actions/roomActions';
@@ -13,9 +11,6 @@ import {
 const initialState = {
   room: '',
   nickName: '',
-  difficulty: undefined,
-  chronometer: undefined,
-  gameStared: false,
   gamePuzzle: undefined,
   users: [],
 };
@@ -35,14 +30,6 @@ const alertReducer = createReducer(initialState, {
   [setDifficulty.type]: (state, action) => ({
     ...state,
     difficulty: action.payload,
-  }),
-  [setChronometer.type]: (state, action) => ({
-    ...state,
-    chronometer: action.payload,
-  }),
-  [setGameStarted.type]: (state, action) => ({
-    ...state,
-    gameStared: !state?.gameStared,
   }),
   [setGamePuzzle.type]: (state, action) => ({
     ...state,
