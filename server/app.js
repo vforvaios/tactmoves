@@ -20,13 +20,16 @@ function random(arr) {
 }
 
 function createPuzzle(users, room, difficulty) {
-  const gameArray = Array.from({ length: difficulty }, () =>
-    new Array(difficulty).fill(),
-  );
-
-  const gameArrayResolved = Array.from({ length: difficulty }, () =>
-    new Array(difficulty).fill(),
-  );
+  const gameArray = [];
+  const gameArrayResolved = [];
+  for (let i = 0; i < difficulty; i++) {
+    gameArray[i] = [];
+    gameArrayResolved[i] = [];
+    for (j = 0; j < difficulty; j++) {
+      gameArray[i][j] = '';
+      gameArrayResolved[i][j] = '';
+    }
+  }
 
   for (let i = 0; i < users.length; i++) {
     if (users[i].room === room) {
@@ -43,8 +46,6 @@ function createPuzzle(users, room, difficulty) {
       row?.map((cell) => random(usersInRoom)),
     );
   }
-
-  console.log(games[room]);
 
   io.in(room).emit('getPuzzle', { gameArray });
 }
@@ -85,7 +86,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('playerClickedSquare', ({ room, row, column, user }) => {
-    socket.to(room).emit('usersClick', { row, column });
+    console.log(user);
+    socket.to(room).emit('usersClick', { row, column, user });
   });
 });
 

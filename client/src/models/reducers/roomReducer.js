@@ -6,6 +6,7 @@ import {
   setDifficulty,
   setGamePuzzle,
   setRowColumnColor,
+  setRowColumnUser,
 } from 'models/actions/roomActions';
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
   nickName: '',
   gamePuzzle: undefined,
   users: [],
+  gamePuzzleAttributes: undefined,
 };
 const alertReducer = createReducer(initialState, {
   [setRoom.type]: (state, action) => ({
@@ -41,7 +43,21 @@ const alertReducer = createReducer(initialState, {
       index !== action.payload.row
         ? [...row]
         : row?.map((col, index2) =>
-            index2 !== action.payload.column ? col : 'red',
+            index2 !== action.payload.column
+              ? col
+              : action?.payload?.user === state.nickName
+              ? 'red'
+              : 'yellow',
+          ),
+    ),
+  }),
+  [setRowColumnUser.type]: (state, action) => ({
+    ...state,
+    gamePuzzleAttributes: state?.gamePuzzleAttributes?.map((row, index) =>
+      index !== action.payload.row
+        ? [...row]
+        : row?.map((col, index2) =>
+            index2 !== action.payload.column ? col : action?.payload?.user,
           ),
     ),
   }),

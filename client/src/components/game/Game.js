@@ -4,12 +4,13 @@ import {
   setUsers,
   setGamePuzzle,
   setRowColumnColor,
+  setRowColumnUser,
 } from 'models/actions/roomActions';
 import {
   nickName,
   users,
   gamePuzzle,
-  difficulty,
+  gamePuzzleAttributes,
 } from 'models/selectors/roomSelectors';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,17 +23,17 @@ const Game = ({ socket }) => {
   const myNickName = useSelector(nickName);
   const myGamePuzzle = useSelector(gamePuzzle);
   const myUsers = useSelector(users);
+  const myGamePuzzleAttributes = useSelector(gamePuzzleAttributes);
 
   const params = useParams();
   const myRoomName = params?.room;
-  const myDifficulty = params?.difficulty;
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
 
   useEffect(() => {
     if (myUsers.length === 1) {
       socket.emit('startTheGame', {
-        difficulty: myDifficulty,
-        room: myRoomName,
+        difficulty: params?.difficulty,
+        room: params?.room,
       });
     }
   }, [myUsers]);
@@ -42,8 +43,9 @@ const Game = ({ socket }) => {
       dispatch(setGamePuzzle(gameArray));
     });
 
-    socket.on('usersClick', ({ row, column }) => {
-      dispatch(setRowColumnColor({ row, column }));
+    socket.on('usersClick', ({ row, column, user }) => {
+      dispatch(setRowColumnColor({ row, column, user }));
+      dispatch(setRowColumnUser({ row, column, user }));
     });
   }, [socket]);
 
@@ -84,8 +86,9 @@ const Game = ({ socket }) => {
   };
 
   const sendClick = ({ room, row, column }) => {
-    dispatch(setRowColumnColor({ row, column }));
-    socket.emit('playerClickedSquare', { room, row, column });
+    dispatch(setRowColumnColor({ row, column, user: myNickName }));
+    dispatch(setRowColumnUser({ row, column, user: myNickName }));
+    socket.emit('playerClickedSquare', { room, row, column, user: myNickName });
   };
 
   return (
@@ -133,7 +136,8 @@ const Game = ({ socket }) => {
                       })
                     }
                     key={`row_${index}_col_${index2}`}
-                    className="gameCol">
+                    className="gameCol"
+                    data-user={myGamePuzzleAttributes?.[row]}>
                     row_{index}_col_{index2}
                   </li>
                 ))}
