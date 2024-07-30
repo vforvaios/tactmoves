@@ -7,6 +7,7 @@ import {
   setGamePuzzle,
   setRowColumnColor,
   setRowColumnUser,
+  setGameStatusAvailable,
 } from 'models/actions/roomActions';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   gamePuzzle: undefined,
   users: [],
   gamePuzzleAttributes: undefined,
+  gameStatusAvailable: false,
 };
 const alertReducer = createReducer(initialState, {
   [setRoom.type]: (state, action) => ({
@@ -37,6 +39,10 @@ const alertReducer = createReducer(initialState, {
     ...state,
     gamePuzzle: action.payload,
     gamePuzzleAttributes: action.payload,
+  }),
+  [setGameStatusAvailable.type]: (state, action) => ({
+    ...state,
+    gameStatusAvailable: action.payload,
   }),
   [setRowColumnColor.type]: (state, action) => ({
     ...state,

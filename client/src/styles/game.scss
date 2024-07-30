@@ -19,3 +19,12 @@
     font-size: 12px;
   }
 }
+
+.user-name {
+  h2 {
+    display: grid;
+    align-items: center;
+    justify-content: start;
+    grid-template-columns: 200px 200px;
+  }
+}

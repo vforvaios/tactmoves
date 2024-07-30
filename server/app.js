@@ -15,6 +15,21 @@ const users = [];
 const rooms = {};
 const games = {};
 
+function checkGameEnd({ currentPuzzleStatus, correctPuzzle }) {
+  if (currentPuzzleStatus === correctPuzzle) return true;
+  if (currentPuzzleStatus == null || correctPuzzle == null) return false;
+  if (currentPuzzleStatus.length !== correctPuzzle.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+  // Please note that calling sort on an array will modify that array.
+  // you might want to clone your array first.
+
+  for (let i = 0; i < currentPuzzleStatus.length; ++i) {
+    if (currentPuzzleStatus[i] !== correctPuzzle[i]) return false;
+  }
+  return true;
+}
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -87,6 +102,14 @@ io.on('connection', (socket) => {
 
   socket.on('playerClickedSquare', ({ room, row, column, user }) => {
     socket.to(room).emit('usersClick', { row, column, user });
+  });
+
+  socket.on('checkGameEnd', ({ room, currentPuzzleStatus }) => {
+    const puzzleIsSolved = checkGameEnd({
+      currentPuzzleStatus,
+      correctPuzzle: games[room],
+    });
+    io.in(room).emit('puzzleSolutionCheck', { solved: puzzleIsSolved });
   });
 });
 

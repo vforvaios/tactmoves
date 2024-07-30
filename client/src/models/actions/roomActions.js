@@ -8,6 +8,7 @@ const setDifficulty = createAction('alert/setDifficulty');
 const setGamePuzzle = createAction('alert/setGamePuzzle');
 const setRowColumnColor = createAction('alert/setRowColumnColor');
 const setRowColumnUser = createAction('alert/setRowColumnUser');
+const setGameStatusAvailable = createAction('alert/setGameStatusAvailable');
 
 export {
   setRoom,
@@ -18,4 +19,5 @@ export {
   setGamePuzzle,
   setRowColumnColor,
   setRowColumnUser,
+  setGameStatusAvailable,
 };
