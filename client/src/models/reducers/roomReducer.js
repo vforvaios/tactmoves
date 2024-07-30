@@ -36,6 +36,7 @@ const alertReducer = createReducer(initialState, {
   [setGamePuzzle.type]: (state, action) => ({
     ...state,
     gamePuzzle: action.payload,
+    gamePuzzleAttributes: action.payload,
   }),
   [setRowColumnColor.type]: (state, action) => ({
     ...state,

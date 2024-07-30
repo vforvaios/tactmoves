@@ -137,7 +137,7 @@ const Game = ({ socket }) => {
                     }
                     key={`row_${index}_col_${index2}`}
                     className="gameCol"
-                    data-user={myGamePuzzleAttributes?.[row]}>
+                    data-user={myGamePuzzleAttributes?.[index]?.[index2]}>
                     row_{index}_col_{index2}
                   </li>
                 ))}

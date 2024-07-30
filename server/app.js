@@ -36,7 +36,7 @@ function createPuzzle(users, room, difficulty) {
       users[i].gamePuzzle = gameArray;
     }
   }
-  // console.log('users=', users);
+
   const usersInRoom = users
     ?.filter((user) => user.room === room)
     ?.map((us) => us?.user);
@@ -86,7 +86,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('playerClickedSquare', ({ room, row, column, user }) => {
-    console.log(user);
     socket.to(room).emit('usersClick', { row, column, user });
   });
 });
