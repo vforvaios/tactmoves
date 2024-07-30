@@ -43,41 +43,43 @@ const Home = ({ socket }) => {
 
   return (
     <div className="homepage">
-      <h1>Welcome to TactMoves</h1>
-      <form onKeyPress={handleKeyPress}>
-        <div>
-          <Input
-            ref={nickNameRef}
-            placeholder="Input your user name"
-            value={myNickName}
-            onChange={(e) => dispatch(setNickName(e.target.value))}
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="Input the room name"
-            value={myRoomName}
-            onChange={(e) => dispatch(setRoom(e.target.value))}
-          />
-        </div>
-        <div>
-          <Dropdown
-            placeholder="Select Difficulty"
-            fluid
-            selection
-            options={gameConfiguration?.levels}
-            onChange={(e, { value }) => dispatch(setDifficulty({ value }))}
-            value={difficulty?.value}
-          />
-        </div>
-        <div>
-          <Link to={`/game/${myRoomName}/${myDifficulty?.value}`}>
-            <Button primary onClick={sendData}>
-              Join
-            </Button>
-          </Link>
-        </div>
-      </form>
+      <div className="small-container">
+        <h1>Welcome to TactMoves</h1>
+        <form onKeyPress={handleKeyPress}>
+          <div>
+            <Input
+              ref={nickNameRef}
+              placeholder="Input your user name"
+              value={myNickName}
+              onChange={(e) => dispatch(setNickName(e.target.value))}
+            />
+          </div>
+          <div>
+            <Input
+              placeholder="Input the room name"
+              value={myRoomName}
+              onChange={(e) => dispatch(setRoom(e.target.value))}
+            />
+          </div>
+          <div>
+            <Dropdown
+              placeholder="Select Difficulty"
+              fluid
+              selection
+              options={gameConfiguration?.levels}
+              onChange={(e, { value }) => dispatch(setDifficulty({ value }))}
+              value={difficulty?.value}
+            />
+          </div>
+          <div>
+            <Link to={`/game/${myRoomName}/${myDifficulty?.value}`}>
+              <Button primary onClick={sendData}>
+                Join
+              </Button>
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

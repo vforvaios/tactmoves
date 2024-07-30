@@ -28,6 +28,12 @@ img {
   }
 }
 
+.small-container {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .hidden {
   display: inline-block;
 }

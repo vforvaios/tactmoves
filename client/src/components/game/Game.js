@@ -66,6 +66,16 @@ const Game = ({ socket }) => {
     socket.on('puzzleSolutionCheck', ({ solved }) => {
       console.log(solved);
     });
+
+    socket.on('userLeft', ({ userLeft }) => {
+      dispatch(
+        setUsers([
+          ...new Set(
+            myUsers?.filter((us) => us?.user !== userLeft).map((u) => u.user),
+          ),
+        ]),
+      );
+    });
   }, [socket]);
 
   useEffect(() => {
@@ -165,9 +175,8 @@ const Game = ({ socket }) => {
                       })
                     }
                     key={`row_${index}_col_${index2}`}
-                    className="gameCol"
-                    data-user={myGamePuzzleAttributes?.[index]?.[index2]}>
-                    row_{index}_col_{index2}
+                    className="gameCol">
+                    {myGamePuzzleAttributes?.[index]?.[index2]}
                   </li>
                 ))}
               </ul>
