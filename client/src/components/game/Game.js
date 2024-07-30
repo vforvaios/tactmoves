@@ -5,7 +5,12 @@ import {
   setGamePuzzle,
   setRowColumnColor,
 } from 'models/actions/roomActions';
-import { nickName, users, gamePuzzle } from 'models/selectors/roomSelectors';
+import {
+  nickName,
+  users,
+  gamePuzzle,
+  difficulty,
+} from 'models/selectors/roomSelectors';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -63,7 +68,11 @@ const Game = ({ socket }) => {
 
       return false;
     } else {
-      socket.emit('joinRoom', { user: myNickName, room: params.room });
+      socket.emit('joinRoom', {
+        user: myNickName,
+        room: params.room,
+        difficulty: params.difficulty,
+      });
       setHaveSetNickName(true);
     }
   };
@@ -120,6 +129,7 @@ const Game = ({ socket }) => {
                         room: myRoomName,
                         row: index,
                         column: index2,
+                        user: myNickName,
                       })
                     }
                     key={`row_${index}_col_${index2}`}
