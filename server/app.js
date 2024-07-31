@@ -67,6 +67,7 @@ function createPuzzle(users, room, difficulty) {
 
 io.on('connection', (socket) => {
   console.log('INITIAL USERS=', users);
+  socket.emit('numberOfUsers', { users });
   socket.on('disconnecting', (reason) => {
     const allRoomsForTheDisconnectingUser = [...socket.rooms];
     allRoomsForTheDisconnectingUser.forEach((room) => {

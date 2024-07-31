@@ -16,11 +16,12 @@ import {
 } from 'models/selectors/roomSelectors';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Input } from 'semantic-ui-react';
 
 const Game = ({ socket }) => {
   const nickNameRef = useRef(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const myNickName = useSelector(nickName);
   const myGamePuzzle = useSelector(gamePuzzle);
@@ -32,6 +33,7 @@ const Game = ({ socket }) => {
   const myRoomName = params?.room;
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
   const [tempNickName, setTempNickName] = useState('');
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
 
   const copyGameUrl = () => {
     var dummy = document.createElement('input'),
@@ -77,7 +79,20 @@ const Game = ({ socket }) => {
         ]),
       );
     });
+
+    socket.on('numberOfUsers', ({ users }) => {
+      setNumberOfUsers(
+        users.filter((user) => user?.room === params.room).length,
+      );
+    });
   }, [socket]);
+
+  useEffect(() => {
+    if (numberOfUsers === 2) {
+      alert('You cannot play in this room!');
+      navigate('/');
+    }
+  }, [socket, numberOfUsers]);
 
   useEffect(() => {
     nickNameRef && nickNameRef?.current?.focus();
