@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   setNickName,
   setRoom,
   setDifficulty,
 } from 'models/actions/roomActions';
 import { nickName, room, difficulty } from 'models/selectors/roomSelectors';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Input, Dropdown, Button } from 'semantic-ui-react';
@@ -17,17 +18,23 @@ const Home = ({ socket }) => {
   const myRoomName = useSelector(room);
   const myDifficulty = useSelector(difficulty);
   const nickNameRef = useRef(null);
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
 
   const sendData = () => {
-    if (myNickName !== '' && myRoomName !== '' && myDifficulty) {
-      socket.emit('joinRoom', {
-        user: myNickName,
-        room: myRoomName,
-        difficulty: myDifficulty?.value,
-      });
-    } else {
-      alert('nick name, room name and difficulty are a must!');
+    if (numberOfUsers !== 0) {
+      alert('Cannot create this room as it already exists');
       window.location.reload();
+    } else {
+      if (myNickName !== '' && myRoomName !== '' && myDifficulty) {
+        socket.emit('joinRoom', {
+          user: myNickName,
+          room: myRoomName,
+          difficulty: myDifficulty?.value,
+        });
+      } else {
+        alert('nick name, room name and difficulty are a must!');
+        window.location.reload();
+      }
     }
   };
 
@@ -41,11 +48,19 @@ const Home = ({ socket }) => {
     nickNameRef.current.focus();
   }, []);
 
+  useEffect(() => {
+    socket.on('numberOfUsers', ({ users }) => {
+      setNumberOfUsers(
+        users.filter((user) => user?.room === myRoomName).length,
+      );
+    });
+  }, [socket]);
+
   return (
     <div className="homepage">
       <div className="small-container">
         <h1>Welcome to TactMoves</h1>
-        <form onKeyPress={handleKeyPress}>
+        <form onKeyDown={handleKeyPress}>
           <div>
             <Input
               ref={nickNameRef}
