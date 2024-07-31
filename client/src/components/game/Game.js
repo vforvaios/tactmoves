@@ -31,6 +31,7 @@ const Game = ({ socket }) => {
   const params = useParams();
   const myRoomName = params?.room;
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
+  const [tempNickName, setTempNickName] = useState('');
 
   const copyGameUrl = () => {
     var dummy = document.createElement('input'),
@@ -94,13 +95,14 @@ const Game = ({ socket }) => {
   }, [haveSetNickName, socket]);
 
   const sendData = () => {
-    if (!myNickName) {
+    if (!tempNickName) {
       alert('Please enter a valid nick name');
 
       return false;
     } else {
+      dispatch(setNickName(tempNickName));
       socket.emit('joinRoom', {
-        user: myNickName,
+        user: tempNickName,
         room: params.room,
         difficulty: params.difficulty,
       });
@@ -128,13 +130,13 @@ const Game = ({ socket }) => {
   return (
     <div className="chat">
       {!haveSetNickName ? (
-        <form onKeyPress={handleKeyPress}>
+        <form onKeyDown={handleKeyPress}>
           <div>
             <Input
               ref={nickNameRef}
               placeholder="Input your user name"
-              value={myNickName}
-              onChange={(e) => dispatch(setNickName(e.target.value))}
+              value={tempNickName}
+              onChange={(e) => setTempNickName(e.target.value)}
             />
           </div>
           <div>

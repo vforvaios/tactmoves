@@ -66,12 +66,13 @@ function createPuzzle(users, room, difficulty) {
 }
 
 io.on('connection', (socket) => {
+  console.log('INITIAL USERS=', users);
   socket.on('disconnecting', (reason) => {
     const allRoomsForTheDisconnectingUser = [...socket.rooms];
     allRoomsForTheDisconnectingUser.forEach((room) => {
       socket.leave(room);
       const userLeftNickName = users?.find((user) => user.id === socket.id)
-        .user;
+        ?.user;
       userLeft = users.filter((user) => user.id !== socket.id);
       socket.to(room).emit('userLeft', { userLeft });
     });
@@ -85,6 +86,7 @@ io.on('connection', (socket) => {
       difficulty,
     });
     socket.join(room);
+    console.log('USERS AFTER JOINING=', users);
 
     //display a welcome message to the user who have joined a room
     socket.emit('message', {
