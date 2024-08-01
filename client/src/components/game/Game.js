@@ -95,7 +95,6 @@ const Game = ({ socket }) => {
     });
 
     socket.on('numberOfUsers', ({ users }) => {
-      console.log(users.filter((user) => user?.room === params.room).length);
       setNumberOfUsers(
         users.filter((user) => user?.room === params.room).length,
       );
