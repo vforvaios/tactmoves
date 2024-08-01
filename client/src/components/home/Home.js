@@ -22,7 +22,10 @@ const Home = ({ socket }) => {
   const [existingUsers, setExistingUsers] = useState([]);
 
   const sendData = () => {
-    if (numberOfUsers !== 0 || existingUsers.includes(myNickName)) {
+    if (
+      numberOfUsers > process.env.REACT_APP_MAXIMUL_PLAYERS_IN_ROOM - 1 ||
+      existingUsers.includes(myNickName)
+    ) {
       alert(
         'Cannot create because either this room or the username already exists',
       );

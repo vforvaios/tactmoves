@@ -34,6 +34,7 @@ const Game = ({ socket }) => {
   const [haveSetNickName, setHaveSetNickName] = useState(myNickName);
   const [tempNickName, setTempNickName] = useState('');
   const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [tempResolvedPuzzle, setTempResolvedPuzzle] = useState();
 
   const copyGameUrl = () => {
     var dummy = document.createElement('input'),
@@ -56,9 +57,22 @@ const Game = ({ socket }) => {
   }, [myUsers]);
 
   useEffect(() => {
-    socket.on('getPuzzle', ({ gameArray }) => {
+    socket.on('getPuzzle', ({ gameArray, resolvedGame }) => {
+      const usersNickName = tempNickName === '' ? myNickName : tempNickName;
+
+      const resolvedPuzzle = gameArray?.map((row, index) =>
+        row?.map((col, index2) =>
+          resolvedGame[index][index2] === usersNickName ? 'red' : 'yellow',
+        ),
+      );
+
       dispatch(setGamePuzzle(gameArray));
       dispatch(setGameStatusAvailable(true));
+      setTempResolvedPuzzle(resolvedPuzzle);
+
+      setTimeout(function () {
+        setTempResolvedPuzzle([]);
+      }, process.env.REACT_APP_TIMEOUT_VANISH_RESOLVED_PUZZLE);
     });
 
     socket.on('usersClick', ({ row, column, user }) => {
@@ -85,10 +99,10 @@ const Game = ({ socket }) => {
         users.filter((user) => user?.room === params.room).length,
       );
     });
-  }, [socket]);
+  }, [socket, myNickName]);
 
   useEffect(() => {
-    if (numberOfUsers === 2) {
+    if (numberOfUsers === process.env.REACT_APP_MAXIMUL_PLAYERS_IN_ROOM) {
       alert('You cannot play in this room!');
       navigate('/');
     }
@@ -142,6 +156,9 @@ const Game = ({ socket }) => {
     });
   };
 
+  const gameBoard =
+    tempResolvedPuzzle?.length > 0 ? tempResolvedPuzzle : myGamePuzzle;
+
   return (
     <div className="chat">
       {!haveSetNickName ? (
@@ -178,11 +195,13 @@ const Game = ({ socket }) => {
           </ul>
           <hr />
           <div className="gamePuzzle">
-            {myGamePuzzle?.map((rows, index) => (
+            {gameBoard?.map((rows, index) => (
               <ul key={`row_${index}`} className="gameRow">
                 {rows?.map((row, index2) => (
                   <li
-                    style={{ backgroundColor: row }}
+                    style={{
+                      backgroundColor: row,
+                    }}
                     onClick={() =>
                       sendClick({
                         room: myRoomName,

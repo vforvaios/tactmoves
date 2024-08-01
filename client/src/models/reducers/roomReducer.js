@@ -17,6 +17,7 @@ const initialState = {
   users: [],
   gamePuzzleAttributes: undefined,
   gameStatusAvailable: false,
+  tempResolvedPuzzle: [],
 };
 const alertReducer = createReducer(initialState, {
   [setRoom.type]: (state, action) => ({

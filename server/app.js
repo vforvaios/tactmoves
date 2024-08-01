@@ -62,7 +62,7 @@ function createPuzzle(users, room, difficulty) {
     );
   }
 
-  io.in(room).emit('getPuzzle', { gameArray });
+  io.in(room).emit('getPuzzle', { gameArray, resolvedGame: games[room] });
 }
 
 io.on('connection', (socket) => {
