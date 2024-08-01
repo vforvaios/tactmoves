@@ -19,10 +19,13 @@ const Home = ({ socket }) => {
   const myDifficulty = useSelector(difficulty);
   const nickNameRef = useRef(null);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [existingUsers, setExistingUsers] = useState([]);
 
   const sendData = () => {
-    if (numberOfUsers !== 0) {
-      alert('Cannot create this room as it already exists');
+    if (numberOfUsers !== 0 || existingUsers.includes(myNickName)) {
+      alert(
+        'Cannot create because either this room or the username already exists',
+      );
       window.location.reload();
     } else {
       if (myNickName !== '' && myRoomName !== '' && myDifficulty) {
@@ -53,6 +56,7 @@ const Home = ({ socket }) => {
       setNumberOfUsers(
         users.filter((user) => user?.room === myRoomName).length,
       );
+      setExistingUsers(users?.map((usr) => usr.user));
     });
   }, [socket]);
 
