@@ -48,7 +48,7 @@ const Game = ({ socket }) => {
   };
 
   useEffect(() => {
-    if (myUsers.length === 1) {
+    if (myUsers.length === process.env.REACT_APP_MAXIMUL_PLAYERS_IN_ROOM - 1) {
       socket.emit('startTheGame', {
         difficulty: params?.difficulty,
         room: params?.room,
@@ -95,6 +95,7 @@ const Game = ({ socket }) => {
     });
 
     socket.on('numberOfUsers', ({ users }) => {
+      console.log(users.filter((user) => user?.room === params.room).length);
       setNumberOfUsers(
         users.filter((user) => user?.room === params.room).length,
       );
@@ -102,11 +103,11 @@ const Game = ({ socket }) => {
   }, [socket, myNickName]);
 
   useEffect(() => {
-    if (numberOfUsers === process.env.REACT_APP_MAXIMUL_PLAYERS_IN_ROOM) {
+    if (numberOfUsers > process.env.REACT_APP_MAXIMUL_PLAYERS_IN_ROOM - 1) {
       alert('You cannot play in this room!');
       navigate('/');
     }
-  }, [socket, numberOfUsers]);
+  }, [numberOfUsers]);
 
   useEffect(() => {
     nickNameRef && nickNameRef?.current?.focus();
