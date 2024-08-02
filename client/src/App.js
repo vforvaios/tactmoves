@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 import 'semantic-ui-css/semantic.min.css';
 import 'fontello/css/fontello.css';
 
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect(process.env.REACT_APP_SERVER_URL);
 
 const App = () => (
   <HelmetProvider>
